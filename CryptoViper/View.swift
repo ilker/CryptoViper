@@ -43,6 +43,7 @@ class CryptoViewController: UIViewController, AnyView, UITableViewDelegate, UITa
     override func viewDidLoad() {
         super.viewDidLoad()
         
+        view.backgroundColor = .systemPink
         view.addSubview(tableView)
         view.addSubview(messageLabel)
         
@@ -58,11 +59,18 @@ class CryptoViewController: UIViewController, AnyView, UITableViewDelegate, UITa
     }
     
     func tableView(_ tableView: UITableView, numberOfRowsInSection section: Int) -> Int {
-        return 10
+        return cyptos.count
     }
     
     func tableView(_ tableView: UITableView, cellForRowAt indexPath: IndexPath) -> UITableViewCell {
-        return UITableViewCell()
+        let cell = tableView.dequeueReusableCell(withIdentifier: "cell", for: indexPath)
+        var content = cell.defaultContentConfiguration()
+        content.text = self.cyptos[indexPath.row].currency
+        content.secondaryText = self.cyptos[indexPath.row].price
+        cell.contentConfiguration = content
+        cell.backgroundColor = .systemPink
+        
+        return cell
     }
     
     func update(with cryptos: [Crypto]) {
@@ -75,7 +83,12 @@ class CryptoViewController: UIViewController, AnyView, UITableViewDelegate, UITa
     }
     
     func update(with error: String) {
-        
+        DispatchQueue.main.async {
+            self.cyptos = []
+            self.tableView.isHidden = true
+            self.messageLabel.text = error
+            self.messageLabel.isHidden = true
+        }
     }
     
     
